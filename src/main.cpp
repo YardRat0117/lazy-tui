@@ -1,0 +1,31 @@
+#include<ftxui/dom/elements.hpp>
+#include<ftxui/screen/screen.hpp>
+#include<ftxui/component/screen_interactive.hpp>
+#include<ftxui/component/component.hpp>
+
+#include"tui/mainMenu.hpp"
+#include"tui/course.hpp"
+
+int main() {
+    using namespace ftxui;
+
+    auto screen = ScreenInteractive::TerminalOutput();
+    static int cur = 0;
+
+    auto curTab = Container::Tab({
+        mainMenu(screen, cur),
+        course(screen, cur),
+    }, &cur);
+
+    auto mainComponent = CatchEvent(curTab, [&](Event e) {
+        if (e == Event::Character('q') && cur) {
+            cur = 0;
+            return true;
+        }
+        return false;
+    });
+
+    screen.Loop(mainComponent);
+
+    return 0;
+}
