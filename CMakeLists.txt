@@ -10,6 +10,11 @@ FetchContent_Declare(ftxui
 )
 FetchContent_MakeAvailable(ftxui)
 
+if(WIN32)
+    add_definitions(-Dpopen=_popen)
+    add_definitions(-Dpclose=_pclose)
+endif()
+
 add_executable(lazytui
     src/main.cpp
     src/clicall/lazycli.cpp
