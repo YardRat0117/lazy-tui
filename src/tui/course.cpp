@@ -31,18 +31,22 @@ std::vector<Course> parseCourseTable(const std::string& raw_output) {
     std::vector<Course> courses;
     std::stringstream ss(raw_output);
     std::string line;
+    std::string block = "│";
+#ifdef _WIN32
+    block = "|";
+#endif
 
     while (std::getline(ss, line)) {
         // 1. 只处理包含数据分隔符 '│' 的行，忽略边框 '━', '┳' 等
         // 注意这个符号不是ASCII中的 '|'
-        if (line.find("│") == std::string::npos) continue;
+        if (line.find(block) == std::string::npos) continue;
 
         // 2. 按 '│' 分割行
         std::vector<std::string> cols;
         std::stringstream lineStream(line);
         std::string cell;
-        const std::string delimiter = "│";
-        size_t start = 0; size_t pos;
+        const std::string delimiter = block;
+        size_t start = 0, pos;
         while ((pos = line.find(delimiter, start)) != std::string::npos) {
             std::string cell = line.substr(start, pos - start);
             cols.push_back(trim(cell));

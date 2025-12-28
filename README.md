@@ -1,12 +1,14 @@
 # Learning At ZJU Yes TUI Front-End
 
-`lazy-tui`是一个基于 C++ 和 ftxui 库的 [LAZY](https://github.com/YangShu233-Snow/Learning_at_ZJU_third_client) TUI。
+`lazy-tui`是一个基于 C++ 和 [ftxui](https://github.com/ArthurSonzogni/FTXUI) 库的 [LAZY](https://github.com/YangShu233-Snow/Learning_at_ZJU_third_client) TUI。
 
 ## 安装
 
 ### Linux/MacOS
 
 首先确保你成功安装了[lazy cli](https://github.com/YangShu233-Snow/Learning_at_ZJU_third_client)，可以在终端直接使用其命令。
+
+**目前在使用这个 TUI 工具前需要手动使用`lazy login`先登录账号，否则可能会有预想外的后果。**
 
 #### Arch 及其衍生发行版
 
@@ -36,7 +38,8 @@ make -j
 
 ### Windows
 
-有条件可以自行构建，也可以下载 Release 中的预构建二进制文件。将`lazytui`文件所在路径添加到环境变量`PATH`中即可。
+有条件可以自行构建，也可以下载 Release 中的压缩包。解压得到预构建的`lazytui.exe`文件。
+将文件所在路径添加到环境变量`PATH`中即可在终端中访问。
 
 ## Todo
 

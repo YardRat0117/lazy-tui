@@ -43,6 +43,8 @@ std::vector<Assignment> parseAssignmentTodo(const std::string& raw_output) {
     std::regex deadline_regex(R"(截止时间:\s*(.*))");
 
     while (std::getline(ss, line)) {
+/*
+#ifndef _WIN32
         // 过滤掉边框字符和空白行
         if (line.find("╭") != std::string::npos) {
             current = Assignment();
@@ -54,10 +56,35 @@ std::vector<Assignment> parseAssignmentTodo(const std::string& raw_output) {
             in_card = false;
             continue;
         }
+#else
+        if (line.find("+") != std::string::npos && line.find("[") != std::string::npos) {
+            current = Assignment();
+            in_card = true;
+            continue;
+        }
+        if (line.find("+") != std::string::npos) {
+            if (!current.id.empty()) assignments.push_back(current);
+            in_card = false;
+            continue;
+        }
+#endif*/
+        if (line.find("[作业]") != std::string::npos && !in_card) {
+            current = Assignment();
+            in_card = true;
+            continue;
+        }
+        if (line.find("─") != std::string::npos || (line.find("+") != std::string::npos && line.find("-") != std::string::npos)) {
+            if (!current.id.empty()) assignments.push_back(current);
+            in_card = false;
+            continue;
+        }
 
-        // 去除两侧的 │ 和空格
-        size_t first_pipe = line.find("│");
-        size_t last_pipe = line.rfind("│");
+        std::string block = "│";
+#ifdef _WIN32
+        block = "|";
+#endif
+        size_t first_pipe = line.find(block);
+        size_t last_pipe = line.rfind(block);
         if (first_pipe == std::string::npos || last_pipe == std::string::npos) continue;
 
         std::string content = line.substr(first_pipe + 1, last_pipe - first_pipe - 1);
@@ -117,8 +144,8 @@ std::string findResourceIdByName(const std::string& raw_output, const std::strin
 }
 
 std::string getConfigPath() {
-    std::string home = std::getenv("HOME");
-    if (!home.empty()) return home + "/.config/.lazy_tui_config";
+    const char* home = std::getenv("HOME");
+    if (home && *home) return std::string(home) + "/.config/.lazy_tui_config";
     return ".lazy_tui_config";
 }
 
@@ -138,10 +165,21 @@ std::string loadPath() {
             return path;
         }
     }
+
+    const char* home = std::getenv("HOME");
+    if (home && *home && fs::exists(home)) {
+        return std::string(home);
+    }
+
+    const char* userprofile = std::getenv("USERPROFILE");
+    if (userprofile && *userprofile && fs::exists(userprofile)) {
+        return std::string(userprofile);
+    }
+    /*
     std::string home = std::getenv("HOME");
     if (!home.empty()) return home;
     home = std::getenv("USERPROFILE");
-    if (!home.empty()) return home;
+    if (!home.empty()) return home;*/
     return ".";
 }
 
