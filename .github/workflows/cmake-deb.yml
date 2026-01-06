@@ -1,0 +1,52 @@
+name: Build Debian Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential clang libstdc++-12-dev fakeroot
+
+      - name: Extract version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="0.0.0"
+          fi
+          echo "LAZYTUI_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Configure and build
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DLAZYTUI_VERSION=$LAZYTUI_VERSION ..
+          make -j$(nproc)
+
+      - name: Package with CPack
+        run: |
+          cd build
+          cpack -G DEB
+
+      - name: Upload DEB package
+        uses: actions/upload-artifact@v3
+        with:
+          name: lazytui-deb
+          path: build/*.deb
+
