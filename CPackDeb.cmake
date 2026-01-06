@@ -1,0 +1,19 @@
+if(NOT DEFINED LAZYTUI_VERSION)
+    set(LAZYTUI_VERSION "0.0.0")
+endif()
+
+set(CPACK_PACKAGE_NAME "lazytui")
+set(CPACK_PACKAGE_VERSION "${LAZYTUI_VERSION}")
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "YardRat <yardrat0117@gmail.com>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6")
+set(CPACK_PACKAGE_DESCRIPTION "A TUI tool for managing courses and resources")
+set(CPACK_PACKAGE_CONTACT "YardRat <yardrat0117@gmail.com>")
+set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
+
+set(CPACK_TMPDIR "${CMAKE_BINARY_DIR}/_CPackTmp")
+file(MAKE_DIRECTORY "${CPACK_TMPDIR}")
+set(ENV{TMPDIR} "${CPACK_TMPDIR}")
+
+include(CPack)
+

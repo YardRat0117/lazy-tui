@@ -34,3 +34,5 @@ target_link_libraries(lazytui PRIVATE
 
 install(TARGETS lazytui RUNTIME DESTINATION bin)
 install(FILES README.md DESTINATION share/doc/lazytui)
+
+include("${CMAKE_SOURCE_DIR}/CPackDeb.cmake")
